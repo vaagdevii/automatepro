@@ -2,19 +2,26 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
+const fs = require("fs");
+const path = require("path");
 
 const leadRoutes = require("./routes/leadRoutes");
 const candidateRoutes = require("./routes/candidateRoutes");
 
 dotenv.config();
 
-console.log("GEMINI KEY LOADED:", process.env.GEMINI_API_KEY ? "YES" : "NO");
 const app = express();
+
+const uploadsPath = path.join(__dirname, "uploads");
+
+if (!fs.existsSync(uploadsPath)) {
+  fs.mkdirSync(uploadsPath);
+}
 
 app.use(cors());
 app.use(express.json());
 
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(uploadsPath));
 
 mongoose
   .connect(process.env.MONGO_URI)
