@@ -104,17 +104,21 @@ const createCandidate = async (req, res) => {
       aiSummary: analysis.aiSummary,
     });
 
-    try {
-      await sendCandidateConfirmationEmail(candidate);
-      await sendAdminCandidateNotificationEmail(candidate);
-    } catch (emailError) {
-      console.log("Candidate email sending failed:", emailError.message);
-    }
-
     res.status(201).json({
       success: true,
       message: "Candidate application submitted successfully",
       data: candidate,
+    });
+
+    Promise.allSettled([
+      sendCandidateConfirmationEmail(candidate),
+      sendAdminCandidateNotificationEmail(candidate),
+    ]).then((results) => {
+      results.forEach((result) => {
+        if (result.status === "rejected") {
+          console.log("Candidate email sending failed:", result.reason.message);
+        }
+      });
     });
   } catch (error) {
     res.status(500).json({
