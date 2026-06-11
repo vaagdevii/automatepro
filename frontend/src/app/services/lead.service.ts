@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class LeadService {
-  private apiUrl = 'http://localhost:5000/api/leads';
+  private apiUrl = 'https://automatepro-backend.onrender.com/api/leads';
 
   constructor(private http: HttpClient) {}
 

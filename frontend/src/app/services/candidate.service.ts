@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class CandidateService {
 
-  private apiUrl = 'http://localhost:5000/api/candidates';
+  private apiUrl = 'https://automatepro-backend.onrender.com/api/candidates';
 
   constructor(private http: HttpClient) {}
 
