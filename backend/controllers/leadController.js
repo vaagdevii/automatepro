@@ -18,17 +18,21 @@ const createLead = async (req, res) => {
       aiSummary: analysis.aiSummary,
     });
 
-    try {
-      await sendLeadConfirmationEmail(lead);
-      await sendAdminLeadNotificationEmail(lead);
-    } catch (emailError) {
-      console.log("Email sending failed:", emailError.message);
-    }
-
     res.status(201).json({
       success: true,
-      message: "Lead submitted and analyzed successfully",
+      message: "Lead submitted successfully",
       data: lead,
+    });
+
+    Promise.allSettled([
+      sendLeadConfirmationEmail(lead),
+      sendAdminLeadNotificationEmail(lead),
+    ]).then((results) => {
+      results.forEach((result) => {
+        if (result.status === "rejected") {
+          console.log("Email sending failed:", result.reason.message);
+        }
+      });
     });
   } catch (error) {
     res.status(500).json({
@@ -40,9 +44,7 @@ const createLead = async (req, res) => {
 
 const getLeads = async (req, res) => {
   try {
-    const leads = await Lead.find().sort({
-      createdAt: -1,
-    });
+    const leads = await Lead.find().sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
