@@ -2,7 +2,10 @@ const nodemailer = require("nodemailer");
 
 const createTransporter = () => {
   return nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    requireTLS: true,
     auth: {
       user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
@@ -21,8 +24,9 @@ const sendLeadConfirmationEmail = async (lead) => {
       <h2>Hi ${lead.name},</h2>
       <p>Thank you for contacting <strong>AutomatePro</strong>.</p>
       <p>We received your business automation inquiry for <strong>${lead.company}</strong>.</p>
-      
-
+      <p><strong>Priority:</strong> ${lead.priority}</p>
+      <p><strong>AI Score:</strong> ${lead.aiScore}/100</p>
+      <p><strong>Summary:</strong> ${lead.aiSummary}</p>
       <p>Our team will contact you soon.</p>
       <br />
       <p>Regards,<br /><strong>AutomatePro Team</strong></p>
@@ -54,6 +58,7 @@ const sendAdminLeadNotificationEmail = async (lead) => {
     `,
   });
 };
+
 const sendCandidateConfirmationEmail = async (candidate) => {
   const transporter = createTransporter();
 
@@ -81,22 +86,16 @@ const sendAdminCandidateNotificationEmail = async (candidate) => {
     subject: `New Candidate Applied - ${candidate.position}`,
     html: `
       <h2>New Candidate Application</h2>
-
       <p><strong>Name:</strong> ${candidate.fullName}</p>
       <p><strong>Email:</strong> ${candidate.email}</p>
       <p><strong>Phone:</strong> ${candidate.phone}</p>
       <p><strong>Position:</strong> ${candidate.position}</p>
-
       <hr />
-
       <p><strong>AI Score:</strong> ${candidate.aiScore}/100</p>
       <p><strong>Recommendation:</strong> ${candidate.recommendation}</p>
       <p><strong>AI Summary:</strong> ${candidate.aiSummary}</p>
-
       <hr />
-
       <p><strong>Resume File:</strong> ${candidate.resumeFileName}</p>
-
       <p><strong>Candidate Note:</strong></p>
       <p>${candidate.coverNote}</p>
     `,
