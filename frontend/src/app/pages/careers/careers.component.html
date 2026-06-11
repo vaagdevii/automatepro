@@ -1,0 +1,92 @@
+<section class="careers-page">
+
+  <div class="careers-card">
+
+    <h1>Careers at AutomatePro</h1>
+
+    <p>
+      Apply for open positions and let our AI assist with screening.
+    </p>
+
+    <div class="alert success" *ngIf="successMessage">
+      {{ successMessage }}
+    </div>
+
+    <div class="alert error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <form (ngSubmit)="submitApplication()">
+
+      <input
+        type="text"
+        placeholder="Full Name"
+        name="fullName"
+        [(ngModel)]="candidateData.fullName"
+        required
+      />
+
+      <input
+        type="email"
+        placeholder="Email Address"
+        name="email"
+        [(ngModel)]="candidateData.email"
+        required
+      />
+
+      <input
+        type="text"
+        placeholder="Phone Number"
+        name="phone"
+        [(ngModel)]="candidateData.phone"
+        required
+      />
+
+      <select
+        name="position"
+        [(ngModel)]="candidateData.position"
+        required
+      >
+        <option value="">Select Position</option>
+
+        <option>AI Automation Specialist</option>
+
+        <option>Full Stack Developer</option>
+
+        <option>Frontend Developer</option>
+
+        <option>Backend Developer</option>
+
+        <option>Business Development Executive</option>
+      </select>
+
+      <input
+        type="file"
+        accept=".pdf,.doc,.docx"
+        (change)="onFileSelected($event)"
+      />
+
+      <textarea
+        rows="5"
+        placeholder="Tell us about yourself"
+        name="coverNote"
+        [(ngModel)]="candidateData.coverNote"
+        required
+      ></textarea>
+
+      <button
+        type="submit"
+        [disabled]="isSubmitting"
+      >
+        {{
+          isSubmitting
+            ? 'Submitting...'
+            : 'Apply Now'
+        }}
+      </button>
+
+    </form>
+
+  </div>
+
+</section>

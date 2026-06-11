@@ -1,0 +1,213 @@
+<section class="dashboard">
+  <h1>AutomatePro Dashboard</h1>
+
+  <p>
+    Monitor leads, job applications, AI scores, recommendations, and automation activity.
+  </p>
+
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h3>Total Leads</h3>
+      <h2>{{ totalLeads }}</h2>
+    </div>
+
+    <div class="stat-card">
+      <h3>Hot Leads</h3>
+      <h2>{{ hotLeads }}</h2>
+    </div>
+
+    <div class="stat-card">
+      <h3>Applications</h3>
+      <h2>{{ totalCandidates }}</h2>
+    </div>
+
+    <div class="stat-card">
+      <h3>Shortlisted</h3>
+      <h2>{{ shortlistedCandidates }}</h2>
+    </div>
+  </div>
+
+  <div class="analytics-grid">
+    <div class="analytics-card">
+      <h2>Lead Priority Distribution</h2>
+
+      <div class="bar-row">
+        <div class="bar-label">
+          <span>High</span>
+          <strong>{{ hotLeads }}</strong>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill high-fill" [style.width.%]="getLeadPercentage(hotLeads)"></div>
+        </div>
+      </div>
+
+      <div class="bar-row">
+        <div class="bar-label">
+          <span>Medium</span>
+          <strong>{{ mediumLeads }}</strong>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill medium-fill" [style.width.%]="getLeadPercentage(mediumLeads)"></div>
+        </div>
+      </div>
+
+      <div class="bar-row">
+        <div class="bar-label">
+          <span>Low</span>
+          <strong>{{ lowLeads }}</strong>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill low-fill" [style.width.%]="getLeadPercentage(lowLeads)"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="analytics-card">
+      <h2>Candidate Recommendation Distribution</h2>
+
+      <div class="bar-row">
+        <div class="bar-label">
+          <span>Shortlist</span>
+          <strong>{{ shortlistedCandidates }}</strong>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill high-fill" [style.width.%]="getCandidatePercentage(shortlistedCandidates)"></div>
+        </div>
+      </div>
+
+      <div class="bar-row">
+        <div class="bar-label">
+          <span>Review</span>
+          <strong>{{ reviewCandidates }}</strong>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill medium-fill" [style.width.%]="getCandidatePercentage(reviewCandidates)"></div>
+        </div>
+      </div>
+
+      <div class="bar-row">
+        <div class="bar-label">
+          <span>Reject</span>
+          <strong>{{ rejectedCandidates }}</strong>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill low-fill" [style.width.%]="getCandidatePercentage(rejectedCandidates)"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="table-header">
+      <h2>Recent Leads</h2>
+
+      <div class="filters">
+        <input
+          type="text"
+          placeholder="Search leads..."
+          [(ngModel)]="leadSearch"
+        />
+
+        <select [(ngModel)]="leadPriorityFilter">
+          <option value="">All Priorities</option>
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Company</th>
+          <th>Industry</th>
+          <th>Score</th>
+          <th>Priority</th>
+          <th>AI Summary</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let lead of filteredLeads">
+          <td>{{ lead.name }}</td>
+          <td>{{ lead.company }}</td>
+          <td>{{ lead.industry }}</td>
+          <td>{{ lead.aiScore }}/100</td>
+          <td>
+            <span class="badge" [ngClass]="lead.priority.toLowerCase()">
+              {{ lead.priority }}
+            </span>
+          </td>
+          <td class="summary">{{ lead.aiSummary }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="empty-state" *ngIf="filteredLeads.length === 0">
+      No leads found.
+    </p>
+  </div>
+
+  <div class="table-card">
+    <div class="table-header">
+      <h2>Recent Candidates</h2>
+
+      <div class="filters">
+        <input
+          type="text"
+          placeholder="Search candidates..."
+          [(ngModel)]="candidateSearch"
+        />
+
+        <select [(ngModel)]="candidateRecommendationFilter">
+          <option value="">All Recommendations</option>
+          <option value="Shortlist">Shortlist</option>
+          <option value="Review">Review</option>
+          <option value="Reject">Reject</option>
+        </select>
+      </div>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Position</th>
+          <th>Score</th>
+          <th>Recommendation</th>
+          <th>AI Summary</th>
+          <th>Resume</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let candidate of filteredCandidates">
+          <td>{{ candidate.fullName }}</td>
+          <td>{{ candidate.position }}</td>
+          <td>{{ candidate.aiScore }}/100</td>
+          <td>
+            <span class="badge" [ngClass]="candidate.recommendation.toLowerCase()">
+              {{ candidate.recommendation }}
+            </span>
+          </td>
+          <td class="summary">{{ candidate.aiSummary }}</td>
+          <td>
+            <a
+              class="resume-link"
+              [href]="'http://localhost:5000/uploads/' + candidate.resumeFileName"
+              target="_blank"
+            >
+              View Resume
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="empty-state" *ngIf="filteredCandidates.length === 0">
+      No candidates found.
+    </p>
+  </div>
+</section>

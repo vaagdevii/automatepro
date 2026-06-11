@@ -1,0 +1,70 @@
+<section class="form-page">
+  <div class="form-card">
+    <h1>Submit Business Inquiry</h1>
+    <p>Tell us about your business automation needs.</p>
+
+    <div class="alert success" *ngIf="successMessage">
+      {{ successMessage }}
+    </div>
+
+    <div class="alert error" *ngIf="errorMessage">
+      {{ errorMessage }}
+    </div>
+
+    <form (ngSubmit)="submitLead()">
+      <input
+        type="text"
+        placeholder="Full Name"
+        name="name"
+        [(ngModel)]="leadData.name"
+        required
+      />
+
+      <input
+        type="email"
+        placeholder="Email Address"
+        name="email"
+        [(ngModel)]="leadData.email"
+        required
+      />
+
+      <input
+        type="text"
+        placeholder="Phone Number"
+        name="phone"
+        [(ngModel)]="leadData.phone"
+        required
+      />
+
+      <input
+        type="text"
+        placeholder="Company Name"
+        name="company"
+        [(ngModel)]="leadData.company"
+        required
+      />
+
+      <select name="industry" [(ngModel)]="leadData.industry" required>
+        <option value="">Select Industry</option>
+        <option>Salon</option>
+        <option>Restaurant</option>
+        <option>Clinic</option>
+        <option>Education</option>
+        <option>Real Estate</option>
+        <option>Other</option>
+      </select>
+
+      <textarea
+        rows="5"
+        placeholder="What do you want to automate?"
+        name="message"
+        [(ngModel)]="leadData.message"
+        required
+      ></textarea>
+
+      <button type="submit" [disabled]="isSubmitting">
+        {{ isSubmitting ? 'Submitting...' : 'Submit Inquiry' }}
+      </button>
+    </form>
+  </div>
+</section>
